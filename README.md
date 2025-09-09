@@ -17,60 +17,6 @@ This project provisions a small but realistic multi‑tier setup on AWS using Te
 
 > ⚠️ **Cost notice:** This lab creates billable resources (NAT Gateway, ALB, EC2, RDS, EIP). Tear down when finished (`terraform destroy`).
 
-
-## Architecture
-
-```mermaid
-flowchart LR
-  subgraph VPC_A["VPC A 10.0.0.0/16"]
-    direction TB
-    IGW_A[IGW]
-    NAT[NAT Gateway]
-    subgraph PublicA["Public subnets"]
-      A1[Subnet 10.0.1.0/24]
-      A2[Subnet 10.0.3.0/24]
-    end
-    subgraph PrivateApp["Private app subnets"]
-      P1[Subnet 10.0.2.0/24]
-      P2[Subnet 10.0.4.0/24]
-    end
-    subgraph PrivateDB["Private DB subnets"]
-      D1[Subnet 10.0.5.0/24]
-      D2[Subnet 10.0.6.0/24]
-    end
-
-    ALB[ALB Internet-facing]
-    Bastion[Bastion EC2]
-    ASG[ASG (web instances)]
-    RDS[(RDS MySQL)]
-
-    IGW_A --- A1
-    IGW_A --- A2
-    NAT --- A2
-    ALB --- A1
-    Bastion --- A1
-
-    ASG --- P1
-    ASG --- P2
-
-    RDS --- D1
-    RDS --- D2
-  end
-
-  subgraph VPC_B["VPC B 10.1.0.0/16"]
-    direction TB
-    IGW_B[IGW]
-    B1[Subnet 10.1.1.0/24]
-    VM_B[EC2 VM_B]
-    IGW_B --- B1
-    VM_B --- B1
-  end
-
-  Peer{{VPC Peering}}
-  VPC_A <---> Peer <---> VPC_B
-```
-
-
 ## What the Terraform code does
 
 ### Networking (VPC A)
